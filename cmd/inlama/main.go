@@ -10,6 +10,8 @@ func main() {
 	switch config.Stream {
 	case false:
 		inlama.OneshotHandler(config)
+	case true:
+    inlama.StreamHandler(config)
 	}
 
 }

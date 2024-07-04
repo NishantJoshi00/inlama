@@ -24,7 +24,7 @@ func Init() Cli {
 		Long:  "Inlama allows you to pass stdin to LLMs to generate statistics, reports and more... \nThe behaviour can be tweaked with flags allowing for streaming input as well as configuring different models and system prompts for precise control over the output.",
 
 		Run: func(cmd *cobra.Command, args []string) {
-			//
+			// ..
 		},
 	}
 
@@ -36,14 +36,39 @@ func Init() Cli {
 		Model:        "llama3",
 	}
 
+	var completion string = ""
+
 	rootCmd.Flags().BoolVarP(&cli.Stream, "follow", "f", defaults.Stream, "Stream input to model")
 	rootCmd.Flags().StringVarP(&cli.SystemPrompt, "prompt", "p", defaults.SystemPrompt, "System prompt for model")
 	rootCmd.Flags().IntVarP(&cli.BufferTime, "buffer-time", "b", defaults.BufferTime, "Buffer time for streaming input (in seconds)")
 	rootCmd.Flags().StringVarP(&cli.Url, "url", "u", defaults.Url, "Url for model")
 	rootCmd.Flags().StringVarP(&cli.Model, "model", "m", defaults.Model, "Model to use")
 
+	rootCmd.Flags().StringVar(&completion, "completion", "", "Generate shell completion script")
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if rootCmd.Flags().Changed("help") {
+		os.Exit(0)
+	}
+
+	switch completion {
+	case "bash":
+		rootCmd.GenBashCompletion(os.Stdout)
+		os.Exit(0)
+	case "zsh":
+		rootCmd.GenZshCompletion(os.Stdout)
+		os.Exit(0)
+	case "fish":
+		rootCmd.GenFishCompletion(os.Stdout, true)
+		os.Exit(0)
+	case "":
+		// ..
+	default:
+		fmt.Fprintf(os.Stderr, "Unknown completion type %q\n", completion)
 		os.Exit(1)
 	}
 
