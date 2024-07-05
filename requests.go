@@ -3,7 +3,9 @@ package inlama
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 )
 
 /*
@@ -21,7 +23,7 @@ type OllamaRequest struct {
 type OllamaResponse struct {
 	Done     bool   `json:"done"`
 	Response string `json:"response"`
-	context  []int  `json:"context"`
+	Context  []int  `json:"context"`
 }
 
 func GenerateFirstRequest(body string, config Cli) OllamaRequest {
@@ -94,6 +96,6 @@ func SendRequest(request OllamaRequest, config Cli, chunks chan string) ([]int, 
 
 	close(chunks)
 
-	return finalContext.context, nil
+	return finalContext.Context, nil
 
 }

@@ -61,12 +61,14 @@ func StreamHandler(config Cli) {
 	bodyStream := make(chan string)
 	timeout := time.Duration(config.BufferTime) * time.Second
 
-	err := StreamReadStdin(bodyStream)
+	go func() {
+		err := StreamReadStdin(bodyStream)
 
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+	}()
 
 	var fullBody []string
 	var context []int = nil
@@ -74,12 +76,14 @@ func StreamHandler(config Cli) {
 	for {
 		select {
 		case body, more := <-bodyStream:
+
 			if !more {
 				return
 			} else {
 				fullBody = append(fullBody, body)
 			}
 		case <-time.After(timeout):
+
 			joinedInput := strings.Join(fullBody, "\n")
 			fullBody = nil
 
@@ -89,11 +93,17 @@ func StreamHandler(config Cli) {
 
 			var request OllamaRequest
 
+			if joinedInput == "" {
+				continue
+			}
+
 			if context == nil {
 				request = GenerateFirstRequest(joinedInput, config)
 			} else {
 				request = GenerateRequest(joinedInput, config, context)
 			}
+
+			var err error
 
 			context, err = SendRequest(request, config, response)
 
