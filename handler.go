@@ -15,11 +15,11 @@ func IoHandler(response chan string, stream io.Writer, wg *sync.WaitGroup) {
 	go func() {
 		defer wg.Done()
 		for {
-			response, more := <-response
+			resp, more := <-response
 			if !more {
 				break
 			}
-			fmt.Fprint(stream, response)
+			fmt.Fprint(stream, resp)
 		}
 	}()
 

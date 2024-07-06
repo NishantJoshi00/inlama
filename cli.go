@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/BurntSushi/toml"
 	"github.com/spf13/cobra"
 )
 
@@ -36,6 +37,23 @@ func Init() Cli {
 		Model:        "llama3",
 	}
 
+	// Check if a config file is used
+
+	configFile := os.Getenv("CONFIG_FILE")
+
+	_, err := os.Stat(configFile)
+
+	if err == nil {
+		_, err = toml.DecodeFile(configFile, &defaults)
+
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error reading config file")
+			fmt.Fprintln(os.Stderr, err)
+			fmt.Fprintln(os.Stderr)
+			os.Exit(1)
+		}
+	}
+
 	var completion string = ""
 
 	rootCmd.Flags().BoolVarP(&cli.Stream, "follow", "f", defaults.Stream, "Stream input to model")
@@ -43,7 +61,6 @@ func Init() Cli {
 	rootCmd.Flags().IntVarP(&cli.BufferTime, "buffer-time", "b", defaults.BufferTime, "Buffer time for streaming input (in seconds)")
 	rootCmd.Flags().StringVarP(&cli.Url, "url", "u", defaults.Url, "Url for model")
 	rootCmd.Flags().StringVarP(&cli.Model, "model", "m", defaults.Model, "Model to use")
-
 	rootCmd.Flags().StringVar(&completion, "completion", "", "Generate shell completion script")
 
 	if err := rootCmd.Execute(); err != nil {

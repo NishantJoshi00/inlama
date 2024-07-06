@@ -3,9 +3,7 @@ package inlama
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 )
 
 /*
@@ -95,7 +93,6 @@ func SendRequest(request OllamaRequest, config Cli, chunks chan string) ([]int, 
 	}
 
 	close(chunks)
-
 	return finalContext.Context, nil
 
 }

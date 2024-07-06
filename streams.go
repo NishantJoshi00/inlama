@@ -15,7 +15,8 @@ func StreamReadStdin(dataChan chan string) error {
 	close(dataChan)
 
 	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "Error reading from stdin:", err)
+		fmt.Fprintln(os.Stderr, "Error reading from stdin:")
+		fmt.Fprintln(os.Stderr, err)
 		return err
 	}
 
@@ -31,7 +32,8 @@ func OneshotReadStdin() ([]string, error) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "Error reading from stdin:", err)
+		fmt.Fprintln(os.Stderr, "Error reading from stdin:")
+    fmt.Fprintln(os.Stderr, err)
 		return buffer, err
 	}
 
