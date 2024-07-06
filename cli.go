@@ -9,11 +9,12 @@ import (
 )
 
 type Cli struct {
-	Stream       bool   // Stream input to model
-	SystemPrompt string // System prompt for model
-	BufferTime   int    // Buffer time for streaming input (in seconds)
-	Url          string // Url for model
-	Model        string // Model to use
+	Stream       bool     // Stream input to model
+	SystemPrompt string   // System prompt for model
+	BufferTime   int      // Buffer time for streaming input (in seconds)
+	Url          string   // Url for model
+	Model        string   // Model to use
+	Presets      []string // Presets for system prompts
 }
 
 func Init() Cli {
@@ -31,13 +32,6 @@ func Init() Cli {
 
 	var presets = []string{
 		"Generate a one line summary of the following text.",
-		"generate a report of the following text. This summary should include the following: 1 line of summary, 1 line of insights, 1 line of questions, 1 line of gaps, 1 line of recommendations. This report should be structured in a yaml format.",
-	}
-
-	selectedPreset := make([]bool, len(presets))
-
-	for i := range selectedPreset {
-		selectedPreset[i] = false
 	}
 
 	var defaults = Cli{
@@ -46,6 +40,7 @@ func Init() Cli {
 		BufferTime:   1,
 		Url:          "http://localhost:11434",
 		Model:        "llama3",
+		Presets:      presets,
 	}
 
 	// Check if a config file is used
@@ -65,6 +60,12 @@ func Init() Cli {
 		}
 	}
 
+	selectedPreset := make([]bool, len(defaults.Presets))
+
+	for i := range selectedPreset {
+		selectedPreset[i] = false
+	}
+
 	var completion string = ""
 
 	rootCmd.Flags().BoolVarP(&cli.Stream, "follow", "f", defaults.Stream, "Stream input to model")
@@ -74,7 +75,7 @@ func Init() Cli {
 	rootCmd.Flags().StringVarP(&cli.Model, "model", "m", defaults.Model, "Model to use")
 	rootCmd.Flags().StringVar(&completion, "completion", "", "Generate shell completion script")
 
-	for i, preset := range presets {
+	for i, preset := range defaults.Presets {
 		rootCmd.Flags().BoolVar(&selectedPreset[i], fmt.Sprintf("p%d", i), false, fmt.Sprintf("Use the preset: %s", preset))
 	}
 
@@ -85,7 +86,8 @@ func Init() Cli {
 
 	for i, preset := range selectedPreset {
 		if preset {
-			cli.SystemPrompt = presets[i]
+			cli.SystemPrompt = defaults.Presets[i]
+			break
 		}
 	}
 
