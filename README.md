@@ -24,3 +24,51 @@ $ tail -f /var/log/syslog | inLama -f
 
 - `inLama` currently relies of `ollama` style APIs and a active `ollama` server. The CLI tool provides you a flexibility to configure the server URL (defaults to `http://localhost:11434`).
 - `go` version 1.16 or higher.
+
+## Installation
+
+To install `inLama` from source, you can run the following commands:
+
+```bash
+
+# Clone the repository
+
+git clone https://github.com/NishantJoshi00/inlama.git
+
+cd inlama
+
+# Build the binary
+
+make build
+
+# Install the binary
+
+make install
+
+# # If the installation fails due to permission issues, you can run the following command
+# sudo make install
+
+```
+
+## Usage
+
+To use `inLama`, you can run the following command:
+
+```bash
+$ inlama -h
+```
+
+If you wish to setup shell completion for `inLama`, you can run the following command:
+
+- For `bash`:
+  ```bash
+  source <(inlama --completion bash)
+  ```
+- For `zsh`:
+  ```zsh
+  source <(inlama --completion zsh)
+  ```
+- For `fish`:
+  ```fish
+  inlama --completion fish | source
+  ```

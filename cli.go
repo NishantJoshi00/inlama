@@ -74,13 +74,13 @@ func Init() Cli {
 
 	switch completion {
 	case "bash":
-		rootCmd.GenBashCompletion(os.Stdout)
+		rootCmd.Root().GenBashCompletion(os.Stdout)
 		os.Exit(0)
 	case "zsh":
-		rootCmd.GenZshCompletion(os.Stdout)
+		rootCmd.Root().GenZshCompletion(os.Stdout)
 		os.Exit(0)
 	case "fish":
-		rootCmd.GenFishCompletion(os.Stdout, true)
+		rootCmd.Root().GenFishCompletion(os.Stdout, true)
 		os.Exit(0)
 	case "":
 		// ..
