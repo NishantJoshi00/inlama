@@ -29,9 +29,20 @@ func Init() Cli {
 		},
 	}
 
+	var presets = []string{
+		"Generate a one line summary of the following text.",
+		"generate a report of the following text. This summary should include the following: 1 line of summary, 1 line of insights, 1 line of questions, 1 line of gaps, 1 line of recommendations. This report should be structured in a yaml format.",
+	}
+
+	selectedPreset := make([]bool, len(presets))
+
+	for i := range selectedPreset {
+		selectedPreset[i] = false
+	}
+
 	var defaults = Cli{
 		Stream:       false,
-		SystemPrompt: "generate a report of the following text. This summary should include the following: 1 line of summary, 1 line of insights, 1 line of questions, 1 line of gaps, 1 line of recommendations. This report should be structured in a yaml format.",
+		SystemPrompt: presets[0],
 		BufferTime:   1,
 		Url:          "http://localhost:11434",
 		Model:        "llama3",
@@ -63,9 +74,19 @@ func Init() Cli {
 	rootCmd.Flags().StringVarP(&cli.Model, "model", "m", defaults.Model, "Model to use")
 	rootCmd.Flags().StringVar(&completion, "completion", "", "Generate shell completion script")
 
+	for i, preset := range presets {
+		rootCmd.Flags().BoolVar(&selectedPreset[i], fmt.Sprintf("p%d", i), false, fmt.Sprintf("Use the preset: %s", preset))
+	}
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+
+	for i, preset := range selectedPreset {
+		if preset {
+			cli.SystemPrompt = presets[i]
+		}
 	}
 
 	if rootCmd.Flags().Changed("help") {
