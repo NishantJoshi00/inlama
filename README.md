@@ -1,74 +1,122 @@
 # inLama
 
-Using LLM via CLI has never been easier. Intoducing inLama, a CLI tool to use LLM with ease. Pipe your text to inLama and get the output in seconds.
+A powerful CLI tool that seamlessly integrates Large Language Models (LLMs) into your command-line workflow, enabling intelligent text processing through simple Unix-style pipes.
 
 ## Description
 
-Leverage the power of LLMs in you terminal. `inLama` allows you you setup a pipeline with any or your existing data generation commands and effortlessly generate intelligent responses.
+inLama bridges the gap between traditional command-line tools and modern AI capabilities by:
 
-Do you wish to generate a summary of your logs? `inLama` has got you covered.
+- Allowing direct piping of text into LLMs for processing
+- Supporting both one-shot and continuous streaming modes
+- Providing customizable system prompts for specific use cases
+- Integrating smoothly with existing shell tools and workflows
 
-```bash
-# Generate a summary of your logs
-$ cat logs.txt | inLama
-```
-
-Do you wish to setup a continuous monitoring system for your servers? `inLama` has got you covered.
-
-```bash
-# Monitor your servers
-$ tail -f /var/log/syslog | inLama -f
-```
-
-## Requirements
-
-- `inLama` currently relies of `ollama` style APIs and a active `ollama` server. The CLI tool provides you a flexibility to configure the server URL (defaults to `http://localhost:11434`).
-- `go` version 1.16 or higher.
+Perfect for developers, system administrators, and anyone who needs to analyze, summarize, or process text data directly from the command line.
 
 ## Installation
 
-To install `inLama` from source, you can run the following commands:
+### Prerequisites
+
+- Go 1.16 or higher
+- Running Ollama server (default: http://localhost:11434)
+- Make (optional, for using Makefile commands)
+
+### Quick Install
 
 ```bash
-
 # Clone the repository
-
 git clone https://github.com/NishantJoshi00/inlama.git
-
 cd inlama
 
-# Build the binary
-
-make build
-
-# Install the binary
-
+# Build and install
 make install
 
-# # If the installation fails due to permission issues, you can run the following command
-# sudo make install
+# If you encounter permission issues
+sudo make install
+```
 
+### Manual Build
+
+```bash
+# Build only
+make build
+
+# The binary will be available in bin/inlama
 ```
 
 ## Usage
 
-To use `inLama`, you can run the following command:
+### Basic Commands
 
 ```bash
-$ inlama -h
+# Process a file
+cat logs.txt | inlama
+
+# Stream processing (continuous monitoring)
+tail -f /var/log/syslog | inlama -f
+
+# Custom system prompt
+echo "Hello World" | inlama -p "Translate this text to French"
+
+# Use a different model
+cat article.txt | inlama -m gpt4
 ```
 
-If you wish to setup shell completion for `inLama`, you can run the following command:
+### Shell Completion
 
-- For `bash`:
-  ```bash
-  source <(inlama --completion bash)
-  ```
-- For `zsh`:
-  ```zsh
-  source <(inlama --completion zsh)
-  ```
-- For `fish`:
-  ```fish
-  inlama --completion fish | source
-  ```
+Set up shell completion for enhanced usability:
+
+```bash
+# Bash
+source <(inlama --completion bash)
+
+# Zsh
+source <(inlama --completion zsh)
+
+# Fish
+inlama --completion fish | source
+```
+
+### Configuration Options
+
+- `-f, --follow`: Enable streaming mode for continuous input
+- `-p, --prompt`: Set custom system prompt
+- `-b, --buffer-time`: Set buffer time for streaming (seconds)
+- `-u, --url`: Set custom Ollama server URL
+- `-m, --model`: Specify LLM model to use
+- `--completion`: Generate shell completion scripts
+
+### Environment Variables
+
+```bash
+CONFIG_FILE=/path/to/config.toml inlama
+```
+
+## Features
+
+- **Unix-Style Piping**: Seamlessly integrates with standard Unix pipes and filters
+- **Streaming Support**: Real-time processing of continuous data streams
+- **Flexible Configuration**:
+  - Custom system prompts for specialized tasks
+  - Configurable buffer times for streaming
+  - Support for different LLM models
+- **Smart Context Management**: Maintains conversation context in streaming mode
+- **Shell Integration**:
+  - Comprehensive shell completion support
+  - Compatible with bash, zsh, and fish shells
+- **Configuration File Support**: TOML-based configuration for persistent settings
+
+## Contributing Guidelines
+
+1. **Issue First**: Create or find an issue before starting work
+2. **Issue Tags**: Use descriptive tags:
+   - [BUG] for bug reports
+   - [FEATURE] for feature requests
+   - [DOCS] for documentation improvements
+3. **Testing**: Ensure your changes don't break existing functionality
+4. **Code Style**: Follow Go standard formatting guidelines
+5. **Documentation**: Update relevant documentation for any changes
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
